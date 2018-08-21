@@ -1,19 +1,13 @@
-import discord # インストールした discord.py
+import discord
+client = discord.Client()
 
-client = discord.Client() # 接続に使用するオブジェクト
-
-# 起動時に通知してくれる処理
 @client.event
 async def on_ready():
     print('ログインしました')
     await client.change_presence(game=discord.Game(name="FrePeServer"))
-
-# 「/neko」と発言したら「にゃーん」が返る処理
 @client.event
 async def on_message(message):
     if message.content.startswith('/neko'):
         reply = 'にゃーん'
         await client.send_message(message.channel, reply)
-
-
 client.run('NDgwNDQ1NTEyNTEyODMxNDg5.Dlp6ow.E1_2sSoBAYM4cqZywwGZZNl2EkM')
