@@ -27,7 +27,7 @@ async def on_message(message):
         sleep(1)
         await client.send_message(message.channel, msg[2])
         sleep(2)
-        await clinet.send_message(message.channel, random.choice(result))
+        await client.send_message(message.channel, 'Daisuke')
 
 
 
