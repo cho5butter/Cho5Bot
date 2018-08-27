@@ -15,8 +15,8 @@ async def on_message(message):
         reply = 'にゃーん'
         await client.send_message(message.channel, reply)
     elif message.content.startswith('/tukino'):
-        msg = ['マジキチルーレットスタート:rolling_eyes:','ドコドコ┗(^o^)┛','今日の運勢は:question:']
-        result = ['大大吉','大吉','凶後大吉','凶後吉','末大吉','末吉','向大吉','吉','中吉','小吉','小吉後吉','後吉','吉凶末分末大吉','吉凶不分末吉','吉凶相半','吉凶相交末吉','吉凶相央']
+        msg = ['マジキチおみくじスタート:rolling_eyes:','ドコドコ┗(^o^)┛','今日の運勢は:question:']
+        result = random.choice(['大大吉','大吉','凶後大吉','凶後吉','末大吉','末吉','向大吉','吉','中吉','小吉','小吉後吉','後吉','吉凶末分末大吉','吉凶不分末吉','吉凶相半','吉凶相交末吉','吉凶相央'])
         await client.send_message(message.channel, msg[0])
         sleep(1)
         num = 0
@@ -27,7 +27,7 @@ async def on_message(message):
         sleep(1)
         await client.send_message(message.channel, msg[2])
         sleep(2)
-        await client.send_message(message.channel, 'Daisuke')
+        await client.send_message(message.channel, result)
 
 
 
