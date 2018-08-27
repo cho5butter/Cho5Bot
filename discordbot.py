@@ -4,6 +4,8 @@ from time import sleep
 
 client = discord.Client()
 
+prefix = 'c!'
+
 @client.event
 async def on_ready():
     print('ログインしました')
@@ -11,10 +13,10 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.content.startswith('/neko'):
+    if message.content.startswith(prefix + 'neko'):
         reply = 'にゃーん'
         await client.send_message(message.channel, reply)
-    elif message.content.startswith('/tukino'):
+    elif message.content.startswith(prefix + 'tukino'):
         msg = ['マジキチおみくじスタート:rolling_eyes:','ドコドコ┗(^o^)┛','今日の運勢は:question:']
         result = '「「「「「**' + random.choice(['大大吉','大吉','凶後大吉','凶後吉','末大吉','末吉','向大吉','吉','中吉','小吉','小吉後吉','後吉','吉凶末分末大吉','吉凶不分末吉','吉凶相半','吉凶相交末吉','吉凶相央']) + '**」」」」」でした！'
         await client.send_message(message.channel, msg[0])
