@@ -14,7 +14,7 @@ async def on_message(message):
     if message.content.startswith('/neko'):
         reply = 'にゃーん'
         await client.send_message(message.channel, reply)
-    else if message.content.startswith('/tukino'):
+    elif message.content.startswith('/tukino'):
         reply = 'マジキチ'
         await client.send_message(message.channel, reply)
 
