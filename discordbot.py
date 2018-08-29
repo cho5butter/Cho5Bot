@@ -1,10 +1,12 @@
 import discord
+from discord.ext import commands
 import random
 from time import sleep
 
-client = discord.Client()
+prefix = 'c!'//コマンド接頭辞
 
-prefix = 'c!'
+client = discord.Client()
+bot = commands.Bot(command_prefix = prefix)
 
 @client.event
 async def on_ready():
@@ -31,6 +33,8 @@ async def on_message(message):
         sleep(2)
         await client.send_message(message.channel, result)
 
-
+@bot.command
+async def add(ctx, a: int, b: int):
+    await ctx.send(a+b)
 
 client.run('NDgwNDQ1NTEyNTEyODMxNDg5.Dlp6ow.E1_2sSoBAYM4cqZywwGZZNl2EkM')
