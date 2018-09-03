@@ -6,6 +6,7 @@ import os
 import requests
 import json
 import re
+from mcstatus import MinecraftServer
 
 #オリジナル関数
 def uuid(userid):
@@ -109,33 +110,43 @@ async def mcskin(id):
 
 @client.command()
 async def tenki(citycode = '290010'):
-    #都市コード正規表現
-    location_pattern = re.compile('^[0-9]{6}$')
-    if re.match(location_pattern, citycode):
-        print('cityコードが入力されています')
-    else:
-        print('cityコードが入力されていないため変換を行います')
-        f = open('code.json', 'r')
-        json_dict = json.load(f)
-        #引数１が辞書に存在するか確認する
-        print(citycode)
-        if citycode in json_dict:
-            print('辞書のキーにマッチングしました')
-            print('取得したCityコード： ' + json_dict[citycode])
-            citycode = json_dict[citycode]
+    try:
+        #都市コード正規表現
+        location_pattern = re.compile('^[0-9]{6}$')
+        if re.match(location_pattern, citycode):
+            print('cityコードが入力されています')
         else:
-            print('辞書のキーにマッチングしませんでした')
-            await client.say('要求された地名の天気の取得は対応していないため、代わりに奈良市の天気を表示します')
-            citycode = '290010'
-    url = 'http://weather.livedoor.com/forecast/webservice/json/v1'
-    param = {"city": citycode}
-    data = requests.get(url, params = param).json()
-    await client.say(data['title'])
-    await client.say('--------------')
-    await client.say(data['description']['text'])
-    await client.say('--------------')
-    for weather in data['forecasts']:
-        await client.say(weather['dateLabel'] + ':' + weather['telop'])
+            print('cityコードが入力されていないため変換を行います')
+            f = open('code.json', 'r')
+            json_dict = json.load(f)
+            #引数１が辞書に存在するか確認する
+            print(citycode)
+            if citycode in json_dict:
+                print('辞書のキーにマッチングしました')
+                print('取得したCityコード： ' + json_dict[citycode])
+                citycode = json_dict[citycode]
+            else:
+                print('辞書のキーにマッチングしませんでした')
+                await client.say('要求された地名の天気の取得は対応していないため、代わりに奈良市の天気を表示します')
+                citycode = '290010'
+        url = 'http://weather.livedoor.com/forecast/webservice/json/v1'
+        param = {"city": citycode}
+        data = requests.get(url, params = param).json()
+        await client.say(data['title'])
+        await client.say('--------------')
+        await client.say(data['description']['text'])
+        await client.say('--------------')
+        for weather in data['forecasts']:
+            await client.say(weather['dateLabel'] + ':' + weather['telop'])
+    except:
+        await client.say(embed=error)
+
+@client.command()
+async def status():
+    server = MinecraftServer.lookup("cuw.aa0.netvolante.jp")
+    status = server.status()
+    msg = "The server has {0} players and replied in {1} ms".format(status.players.online, status.latency)
+    await client.say(msg)
 
 #コマンド以外
 @client.event
@@ -144,6 +155,9 @@ async def on_message(message):
 
     if client.user == message.author:
         return
+
+    if message.content.startswith('ぬるぽ'):
+        await client.send_message(message.channel, message.author.mention + '\rヽ( ･∀･)ﾉ┌┛ｶﾞｯΣ(ﾉ`Д´)ﾉ')
 
 #トークンは環境変数
 client.run(os.environ.get("DISCORD_TOKEN"))
