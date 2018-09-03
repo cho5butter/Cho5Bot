@@ -17,6 +17,8 @@ def uuid(userid):
 #変数
 prefix = "c!"
 desc = 'ちょこばた制作のオリジナルボットです'
+error = discord.Embed(title=":no_entry: エラー", description="実行に失敗しました\rコマンドの記述方法が間違っている可能性があります\r左メニューの「オリジナルbotの使い方」をもう一度ご確認ください", color=0xff0007)
+error.set_footer(text="存在しないユーザー名や郵便番号を指定したときなどにも同様のエラーが発生します")
 
 #インスタンス生成
 client = commands.Bot(command_prefix=prefix, description=desc)
@@ -28,7 +30,7 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
-    await client.change_presence(game=discord.Game(name="FrePeServer"))
+    await client.change_presence(game=discord.Game(name="FrePeServer"), status=discord.Status.dnd)
 
 #コマンド関係
 @client.command(description="鳴き声の後にランダムな猫画像が表示されます",
@@ -58,45 +60,73 @@ async def tukino():
 
 @client.command()
 async def post(zipcode):
-    zip_pattern = re.compile('^[0-9]{7}$')
-    addressResult = ''
-    if re.match(zip_pattern, zipcode):
-        print('郵便番号が正規表現にマッチしました')
-        url = "http://zipcloud.ibsnet.co.jp/api/search"
-        param = {"zipcode": zipcode}
-        res = requests.get(url, params=param)
-        response = json.loads(res.text)
-        address = response["results"][0]
-        addressResult = address["address1"] + address["address2"] + address["address3"]
-    else:
-        print('郵便番号が正規表現にマッチしませんでした')
-        addressResult = "値が不正です"
+    try:
+        zip_pattern = re.compile('^[0-9]{7}$')
+        addressResult = ''
+        if re.match(zip_pattern, zipcode):
+            print('郵便番号が正規表現にマッチしました')
+            url = "http://zipcloud.ibsnet.co.jp/api/search"
+            param = {"zipcode": zipcode}
+            res = requests.get(url, params=param)
+            response = json.loads(res.text)
+            address = response["results"][0]
+            addressResult = address["address1"] + address["address2"] + address["address3"]
+        else:
+            print('郵便番号が正規表現にマッチしませんでした')
+            addressResult = "郵便番号が不正です"
 
-    embed=discord.Embed(title=zipcode, description=addressResult, color=0xff0007)
-    embed.set_author(name="住所",icon_url="http://webest-net.com/wp-content/uploads/2015/12/unnamed-2.png")
-    await client.say(embed=embed)
+        embed=discord.Embed(title=zipcode, description=addressResult, color=0xff0007)
+        embed.set_author(name="住所",icon_url="http://webest-net.com/wp-content/uploads/2015/12/unnamed-2.png")
+        await client.say(embed=embed)
+    except:
+        await client.say(embed=error)
+
 
 @client.command()
 async def mcuuid(id):
-    msg = uuid(id)
-    embed=discord.Embed(title=id, description=msg, color=0x0fa800)
-    embed.set_author(name="UUID",icon_url="https://t1.rbxcdn.com/a8f882d102d3a03b4e88d6da5e696095")
-    await client.say(embed=embed)
+    try:
+        msg = uuid(id)
+        embed=discord.Embed(title=id, description=msg, color=0x0fa800)
+        embed.set_author(name="UUID",icon_url="https://t1.rbxcdn.com/a8f882d102d3a03b4e88d6da5e696095")
+        await client.say(embed=embed)
+    except:
+        await client.say(embed=error)
 
 @client.command()
 async def mcskin(id):
-    mcuuid = uuid(id)
-    url1 = "https://mine.ly/" + id + ".1"
-    url2 = "https://minotar.net/avatar/" + mcuuid + ".png"
-    url3 = "https://minecraft.jp/players/" + id
-    embed = discord.Embed(title= id + 'のスキンの取得に成功しました', description=":hearts: 全体スキン↓\r" + url1 + "\r:diamonds: jmsプロフィール↓\r" + url3, color=0x55d761)
-    embed.set_footer(text="uuid：" + mcuuid)
-    embed.set_thumbnail(url=url2)
-    embed.set_author(name=id,icon_url=url2)
-    await client.say(embed=embed)
+    try:
+        mcuuid = uuid(id)
+        url1 = "https://mine.ly/" + id + ".1"
+        url2 = "https://minotar.net/avatar/" + mcuuid + ".png"
+        url3 = "https://minecraft.jp/players/" + id
+        embed = discord.Embed(title= id + 'のスキンの取得に成功しました', description=":hearts: 全体スキン↓\r" + url1 + "\r:diamonds: jmsプロフィール↓\r" + url3, color=0x55d761)
+        embed.set_footer(text="uuid：" + mcuuid)
+        embed.set_thumbnail(url=url2)
+        embed.set_author(name=id,icon_url=url2)
+        await client.say(embed=embed)
+    except:
+        await client.say(embed=error)
 
 @client.command()
-async def tenki(citycode = '280010'):
+async def tenki(citycode = '290010'):
+    #都市コード正規表現
+    location_pattern = re.compile('^[0-9]{6}$')
+    if re.match(location_pattern, citycode):
+        print('cityコードが入力されています')
+    else:
+        print('cityコードが入力されていないため変換を行います')
+        f = open('code.json', 'r')
+        json_dict = json.load(f)
+        #引数１が辞書に存在するか確認する
+        print(citycode)
+        if citycode in json_dict:
+            print('辞書のキーにマッチングしました')
+            print('取得したCityコード： ' + json_dict[citycode])
+            citycode = json_dict[citycode]
+        else:
+            print('辞書のキーにマッチングしませんでした')
+            await client.say('要求された地名の天気の取得は対応していないため、代わりに奈良市の天気を表示します')
+            citycode = '290010'
     url = 'http://weather.livedoor.com/forecast/webservice/json/v1'
     param = {"city": citycode}
     data = requests.get(url, params = param).json()
