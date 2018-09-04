@@ -31,7 +31,7 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
-    await client.change_presence(game=discord.Game(name="FrePeServer"), status=discord.Status.dnd)
+    await client.change_presence(game=discord.Game(name="FrePeServer"), status=discord.Status.online)
 
 #コマンド関係
 @client.command(description="鳴き声の後にランダムな猫画像が表示されます",
@@ -132,21 +132,52 @@ async def tenki(citycode = '290010'):
         url = 'http://weather.livedoor.com/forecast/webservice/json/v1'
         param = {"city": citycode}
         data = requests.get(url, params = param).json()
-        await client.say(data['title'])
-        await client.say('--------------')
-        await client.say(data['description']['text'])
-        await client.say('--------------')
+        embed=discord.Embed(title=':sunny: ' + data['title'], description='```' + data['description']['text'] + '```', color=0x53b2fc)
         for weather in data['forecasts']:
-            await client.say(weather['dateLabel'] + ':' + weather['telop'])
+            embed.add_field(name=weather['dateLabel'], value=weather['telop'], inline=True)
+        embed.set_thumbnail(url=data['forecasts'][0]['image']['url'])
+        await client.say(embed=embed)
     except:
         await client.say(embed=error)
 
 @client.command()
-async def status():
-    server = MinecraftServer.lookup("cuw.aa0.netvolante.jp")
-    status = server.status()
-    msg = "The server has {0} players and replied in {1} ms".format(status.players.online, status.latency)
-    await client.say(msg)
+async def status(ip = "vanilla-tairiku.com"):
+    try:
+        server = MinecraftServer.lookup(ip)
+        status = server.status()
+        embed=discord.Embed(title=ip, color=0x0fa800)
+        embed.set_author(name="サーバーの状態",icon_url="https://t1.rbxcdn.com/a8f882d102d3a03b4e88d6da5e696095")
+        embed.add_field(name=":gear: バージョン", value=status.version.name, inline=True)
+        embed.add_field(name=":zap: ping", value=status.latency, inline=True)
+        embed.add_field(name=":video_game:   最大接続可能人数", value=status.players.max, inline=True)
+        embed.add_field(name=":game_die:  プレイ人数", value=status.players.online, inline=True)
+        if status.players.sample is not None:
+            msg = ""
+            counter = 1
+            for player in status.players.sample:
+                msg += str(counter) + '. ' + player.name + ' (' + player.id + ')\r'
+                counter += 1
+            embed.add_field(name=":grimacing: オンラインプレイヤー", value=msg, inline=True)
+
+        else:
+            embed.add_field(name=":grimacing: オンラインプレイヤー", value="現在プレイしている人はいません", inline=True)
+        await client.say(embed=embed)
+    except:
+        await client.say(embed=error)
+
+@client.command()
+async def ping(ip = "vanilla-tairiku.com"):
+    try:
+        server = MinecraftServer.lookup(ip)
+        status = server.status()
+        msg = "応答時間は {0} msです".format(status.latency)
+        embed=discord.Embed(title=ip, description=msg, color=0x0fa800)
+        embed.set_author(name="ping",icon_url="https://t1.rbxcdn.com/a8f882d102d3a03b4e88d6da5e696095")
+        await client.say(embed=embed)
+    except:
+        await client.say(embed=error)
+
+
 
 #コマンド以外
 @client.event
@@ -158,6 +189,17 @@ async def on_message(message):
 
     if message.content.startswith('ぬるぽ'):
         await client.send_message(message.channel, message.author.mention + '\rヽ( ･∀･)ﾉ┌┛ｶﾞｯΣ(ﾉ`Д´)ﾉ')
+    elif message.content.startswith('ca!clean'):
+        clean_flag = True
+        while (clean_flag):
+            msgs = [msg async for msg in client.logs_from(message.channel)]
+            if len(msgs) > 1: # 1発言以下でdelete_messagesするとエラーになる
+                await client.delete_messages(msgs)
+            else:
+                clean_flag = False
+                await client.send_message(message.channel, 'ログの全削除が完了しました')
+    else:
+        return
 
 #トークンは環境変数
 client.run(os.environ.get("DISCORD_TOKEN"))
