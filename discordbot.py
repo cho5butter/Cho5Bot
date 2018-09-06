@@ -7,6 +7,8 @@ import requests
 import json
 import re
 from mcstatus import MinecraftServer
+from datetime import date
+import xml.etree.ElementTree as etree
 
 #オリジナル関数
 def uuid(userid):
@@ -14,6 +16,35 @@ def uuid(userid):
     res = requests.get(url)
     response = json.loads(res.text)
     return response["id"]
+
+def getGeoCode(zipcode):
+    url = 'http://geoapi.heartrails.com/api/json'
+    payload = {'method':'searchByPostal'}
+    payload['postal']= zipcode
+    res = requests.get(url, params=payload).json()['response']['location'][0]
+    loc = res['prefecture'] + res['prefecture'] + res['town']
+    lat = res['y']
+    lng = res['x']
+    return (loc,lat,lng)
+
+def getTimeSunMoon(lat, lng, time):
+    year = time.year
+    month = time.month
+    day = time.day
+    url = 'http://labs.bitmeister.jp/ohakon/api/?'
+    payload = {'mode':'sun_moon_rise_set', 'year':year, 'month':month, 'day':day, 'lat':lat, 'lng':lng}
+    response = requests.get(url, params=payload)
+
+    data = etree.fromstring(response.content)
+
+    sr = data[3][2].text
+    ss = data[3][3].text
+    mr = data[3][6].text
+    ms = data[3][7].text
+    ma = data[4].text
+
+    return (sr, ss, mr, ms, ma)
+
 
 #変数
 prefix = "c!"
@@ -60,7 +91,7 @@ async def tukino():
     await client.say(result)
 
 @client.command()
-async def post(zipcode):
+async def post(zipcode = "6308501"):
     try:
         zip_pattern = re.compile('^[0-9]{7}$')
         addressResult = ''
@@ -177,6 +208,40 @@ async def ping(ip = "vanilla-tairiku.com"):
     except:
         await client.say(embed=error)
 
+@client.command()
+async def sunmoon(zipcode = '6308213'):
+    try:
+        zip_pattern = re.compile('^[0-9]{7}$')
+        if re.match(zip_pattern, zipcode):
+            print('郵便番号が正規表現にマッチしました')
+            #ハイフンを挿入
+            insert_num = 3
+            zipcode = '{0}{1}{2}'.format(zipcode[:insert_num], '-', zipcode[insert_num:])
+            print(zipcode)
+            #緯度経度を取得
+            loc, lat, lng = getGeoCode(zipcode)
+            sr, ss, mr, ms, ma = getTimeSunMoon(lat, lng, date.today())
+            #画像を取得するための細工
+            mai = int(float(ma))
+            mai = '%02d' % mai
+            embed=discord.Embed(title=":sunny: 日の出・日の入, 月の出・月の入の時刻 :full_moon:", description="各種情報を正常に取得できました", color=0x46ddd5)
+            embed.set_thumbnail(url="http://www.geocities.jp/easyclub_choro/moon"+mai+".gif")
+            embed.add_field(name=":round_pushpin: 場所情報", value="```情報取得場所の位置情報```", inline=False)
+            embed.add_field(name="郵便番号", value=zipcode, inline=True)
+            embed.add_field(name="住所", value=loc, inline=True)
+            embed.add_field(name=":sun_with_face: 日の出・日の入", value="```日の出時刻と日の入り時刻```", inline=False)
+            embed.add_field(name="日の出", value=sr, inline=True)
+            embed.add_field(name="日の入り", value=ss, inline=True)
+            embed.add_field(name=":first_quarter_moon_with_face: 月の出・月の入", value="```月の出時刻と月の入り時刻```", inline=False)
+            embed.add_field(name="月の出", value=mr, inline=True)
+            embed.add_field(name="月の入り", value=ms, inline=True)
+            embed.add_field(name="正午月齢", value=ma, inline=True)
+            await client.say(embed=embed)
+        else:
+            print('郵便番号が正規表現にマッチしませんでした')
+            await client.say(embed=error)
+    except:
+        await client.say(embed=error)
 
 
 #コマンド以外
