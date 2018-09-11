@@ -24,10 +24,11 @@
 
 ## ローカルで実施する場合
 
-* 1. DiscordでAppを作成する
+* DiscordでAppを作成する
+
 App（Bot）を作成し、Tokenの取得また、サーバーへの参加を行います
 
-* 2. 環境を整える
+* 環境を整える
 
 pythonが実行できる環境で  
 ```
@@ -37,7 +38,8 @@ pip install -U mcstatus
 ```
 を実行します  
 
-* 3. 環境変数に以下を設定する
+* 環境変数に以下を設定する
+
 変数名：`DISCORD_TOKEN`  
 この変数にDiscordTokenを設定します  
 
@@ -52,7 +54,8 @@ vim config.fish
 で設定ファイルを開き、以下を追加します  
 `set -x DISCORD_TOKEN "[取得したToken]"`  
 
-* 4. ファイルを実行する  
+* ファイルを実行する
+
 `python3 discordbot.py`  
 でファイルを実行します
 
@@ -62,15 +65,15 @@ vim config.fish
 |:-------:|:--------|
 |c!neko|ボットが「にゃー」と鳴きます|
 |c!inu|ボットが「わん」と鳴きます|
-|c!tenki <citycode> or <prefecture>|<prefecture>（都道府県名）の位置の天気を取得します（代表都市）
-例 `c!tenki 滋賀`  
-但し、北海道は広いので、「稚内、網走、函館、札幌、旭川、釧路」のどれかの地名を指定ください（`c!tenki 北海道`)では取得できません  
-また上記の地域以外でも地名コードを指定すると、その場所の天気を取得することができます  
-地域コードはLivedoor天気に準じます（地名コードの見つけ方は少々複雑なため、自分で見つけられる方のみご利用ください）
-例 `c!tenki 290020` => 奈良県風屋（`c!tenki 奈良`だと奈良市）
-何も指定しなかった場合は奈良県奈良市の天気が表示されます|
-
-
+|c!tenki <citycode> or <prefecture>|<prefecture>（都道府県名）又は<citycode>（都市コード<livedoor>）の位置の天気を取得します（代表都市|
+|c!post <zipcode>|<zipcode>（郵便番号：ハイフン無しで記入）の場所の住所を調べます|
+|c!sunmoon <zipcode>| <zipcode>（郵便番号：ハイフン無しで記入）の場所での本日の「日の出・日の入/月の出・月の入り・正午月齢」を調べられます|
+|c!mcuuid <player>|<player>（PlayerID）のUUID（固有値）を取得します|
+|c!mcskin <player>|<player>（PlayerID)のスキンをはじめ、様々な情報を取得します|
+|c!ping <domain>|<domain>（サーバーアドレス）へピングを飛ばします|
+|c!status <domain>|<domain>（サーバーアドレス）のプレイ人数、バージョン、接続者、応答時間などの様々な情報を確認できます|
+|ぬるぽ|例のあれが帰ってきます|
+  
 # お問い合わせ
 メールフォーム: <https://c5bt.net/contact>   
 Twitter： <https://twitter.com/__cho__>
