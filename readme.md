@@ -42,9 +42,9 @@ pip install -U mcstatus
 この変数にDiscordTokenを設定します  
 
 設定方法は使ってるshellや環境によっても異なります（以下一例）  
-__ herokuの場合  
+○herokuの場合  
 `heroku config:set DISCORD_TOKEN="[取得したToken]"`  
-__ fishの場合  
+○fishの場合  
 ```
 cd ~/.config/fish
 vim config.fish
