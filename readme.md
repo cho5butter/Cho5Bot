@@ -24,11 +24,11 @@
 
 ## ローカルで実施する場合
 
-* DiscordでAppを作成する
+### 1.DiscordでAppを作成する
 
 App（Bot）を作成し、Tokenの取得また、サーバーへの参加を行います
 
-* 環境を整える
+### 2.環境を整える
 
 pythonが実行できる環境で  
 ```
@@ -38,7 +38,7 @@ pip install -U mcstatus
 ```
 を実行します  
 
-* 環境変数に以下を設定する
+### 3.環境変数に以下を設定する
 
 変数名：`DISCORD_TOKEN`  
 この変数にDiscordTokenを設定します  
@@ -54,7 +54,7 @@ vim config.fish
 で設定ファイルを開き、以下を追加します  
 `set -x DISCORD_TOKEN "[取得したToken]"`  
 
-* ファイルを実行する
+### 4.ファイルを実行する
 
 `python3 discordbot.py`  
 でファイルを実行します
