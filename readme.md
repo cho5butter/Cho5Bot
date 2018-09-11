@@ -75,5 +75,5 @@ vim config.fish
 |ぬるぽ|例のあれが帰ってきます|
 
 # お問い合わせ
-メールフォーム: [https://c5bt.net/contact]   
-Twitter： [https://twitter.com/__cho__]
+メールフォーム: <https://c5bt.net/contact>  
+Twitter： <https://twitter.com/__cho__>
