@@ -65,15 +65,15 @@ vim config.fish
 |:-------:|:--------|
 |c!neko|ボットが「にゃー」と鳴きます|
 |c!inu|ボットが「わん」と鳴きます|
-|c!tenki <citycode> or <prefecture>|<prefecture>（都道府県名）又は<citycode>（都市コード<livedoor>）の位置の天気を取得します（代表都市|
-|c!post <zipcode>|<zipcode>（郵便番号：ハイフン無しで記入）の場所の住所を調べます|
-|c!sunmoon <zipcode>| <zipcode>（郵便番号：ハイフン無しで記入）の場所での本日の「日の出・日の入/月の出・月の入り・正午月齢」を調べられます|
-|c!mcuuid <player>|<player>（PlayerID）のUUID（固有値）を取得します|
-|c!mcskin <player>|<player>（PlayerID)のスキンをはじめ、様々な情報を取得します|
-|c!ping <domain>|<domain>（サーバーアドレス）へピングを飛ばします|
-|c!status <domain>|<domain>（サーバーアドレス）のプレイ人数、バージョン、接続者、応答時間などの様々な情報を確認できます|
+|c!tenki [citycode] or [prefecture]|[prefecture]（都道府県名）又は[citycode]（都市コード[livedoor]）の位置の天気を取得します（代表都市|
+|c!post [zipcode]|[zipcode]（郵便番号：ハイフン無しで記入）の場所の住所を調べます|
+|c!sunmoon [zipcode]| [zipcode]（郵便番号：ハイフン無しで記入）の場所での本日の「日の出・日の入/月の出・月の入り・正午月齢」を調べられます|
+|c!mcuuid [player]|[player]（PlayerID）のUUID（固有値）を取得します|
+|c!mcskin [player]|[player]（PlayerID)のスキンをはじめ、様々な情報を取得します|
+|c!ping [domain]|[domain]（サーバーアドレス）へピングを飛ばします|
+|c!status [domain]|[domain]（サーバーアドレス）のプレイ人数、バージョン、接続者、応答時間などの様々な情報を確認できます|
 |ぬるぽ|例のあれが帰ってきます|
-  
+
 # お問い合わせ
-メールフォーム: <https://c5bt.net/contact>   
-Twitter： <https://twitter.com/__cho__>
+メールフォーム: [https://c5bt.net/contact]   
+Twitter： [https://twitter.com/__cho__]
