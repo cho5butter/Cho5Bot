@@ -68,11 +68,13 @@ async def on_ready():
 @client.command(description="鳴き声の後にランダムな猫画像が表示されます",
                 brief="猫が出現")
 async def neko():
-    await client.say('にゃーん')
+    embed=discord.Embed(image='https://loremflickr.com/320/240/cat')
+    await client.say('にゃーん', embed=embed)
 
 @client.command()
 async def inu():
-    await client.say('わん')
+    embed=discord.Embed(image='https://loremflickr.com/320/240/dog')
+    await client.say('わん', embed=embed)
 
 @client.command()
 async def tukino():
