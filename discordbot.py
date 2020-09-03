@@ -62,40 +62,41 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
-    await client.change_presence(game=discord.Game(name="FrePeServer"), status=discord.Status.online)
+    #await client.change_presence(game=discord.Game(name="FrePeServer"), status=discord.Status.online)
+    await client.change_presence(activity=discord.Game(name="FrePeServer", type=1))
 
 #コマンド関係
 @client.command(description="鳴き声の後にランダムな猫画像が表示されます",
                 brief="猫が出現")
-async def neko():
+async def neko(ctx):
     embed=discord.Embed(color=0xe9574c)
     embed.set_image(url="https://loremflickr.com/320/240/cat")
-    await client.say('にゃーん', embed=embed)
+    await ctx.send('にゃーん', embed=embed)
 
 @client.command()
-async def inu():
+async def inu(ctx):
     embed=discord.Embed(color=0xe9574c)
     embed.set_image(url="https://loremflickr.com/320/240/dog")
-    await client.say('わん', embed=embed)
+    await ctx.send('わん', embed=embed)
 
 @client.command()
-async def tukino():
+async def tukino(ctx):
     msg = ['マジキチおみくじスタート:rolling_eyes:','ドコドコ┗(^o^)┛','今日の運勢は:question:']
     result = '「「「「「**' + random.choice(['大大吉','大吉','凶後大吉','凶後吉','末大吉','末吉','向大吉','吉','中吉','小吉','小吉後吉','後吉','吉凶末分末大吉','吉凶不分末吉','吉凶相半','吉凶相交末吉','吉凶相央']) + '**」」」」」でした！'
-    await client.say(msg[0])
+    await ctx.send(msg[0])
     await asyncio.sleep(1)
     num = 0
     while num < 5:
-        await client.say(msg[1])
+        await ctx.send(msg[1])
         num += 1
         await asyncio.sleep(0.2)
     await asyncio.sleep(1)
-    await client.say(msg[2])
+    await ctx.send(msg[2])
     await asyncio.sleep(2)
-    await client.say(result)
+    await ctx.send(result)
 
 @client.command()
-async def post(zipcode = "6308501"):
+async def post(ctx, zipcode = "6308501"):
     try:
         zip_pattern = re.compile('^[0-9]{7}$')
         addressResult = ''
@@ -113,23 +114,23 @@ async def post(zipcode = "6308501"):
 
         embed=discord.Embed(title=zipcode, description=addressResult, color=0xff0007)
         embed.set_author(name="住所",icon_url="http://webest-net.com/wp-content/uploads/2015/12/unnamed-2.png")
-        await client.say(embed=embed)
+        await ctx.send(embed=embed)
     except:
-        await client.say(embed=error)
+        await ctx.send(embed=error)
 
 
 @client.command()
-async def mcuuid(id):
+async def mcuuid(ctx, id):
     try:
         msg = uuid(id)
         embed=discord.Embed(title=id, description=msg, color=0x0fa800)
         embed.set_author(name="UUID",icon_url="https://t1.rbxcdn.com/a8f882d102d3a03b4e88d6da5e696095")
-        await client.say(embed=embed)
+        await ctx.send(embed=embed)
     except:
-        await client.say(embed=error)
+        await ctx.send(embed=error)
 
 @client.command()
-async def mcskin(id):
+async def mcskin(ctx, id):
     try:
         mcuuid = uuid(id)
         url1 = "https://mine.ly/" + id + ".1"
@@ -139,12 +140,12 @@ async def mcskin(id):
         embed.set_footer(text="uuid：" + mcuuid)
         embed.set_thumbnail(url=url2)
         embed.set_author(name=id,icon_url=url2)
-        await client.say(embed=embed)
+        await ctx.send(embed=embed)
     except:
-        await client.say(embed=error)
+        await ctx.send(embed=error)
 
 @client.command()
-async def tenki(citycode = '290010'):
+async def tenki(ctx, citycode = '290010'):
     try:
         #都市コード正規表現
         location_pattern = re.compile('^[0-9]{6}$')
@@ -162,7 +163,7 @@ async def tenki(citycode = '290010'):
                 citycode = json_dict[citycode]
             else:
                 print('辞書のキーにマッチングしませんでした')
-                await client.say('要求された地名の天気の取得は対応していないため、代わりに奈良市の天気を表示します')
+                await ctx.send('要求された地名の天気の取得は対応していないため、代わりに奈良市の天気を表示します')
                 citycode = '290010'
         url = 'http://weather.livedoor.com/forecast/webservice/json/v1'
         param = {"city": citycode}
@@ -171,12 +172,12 @@ async def tenki(citycode = '290010'):
         for weather in data['forecasts']:
             embed.add_field(name=weather['dateLabel'], value=weather['telop'], inline=True)
         embed.set_thumbnail(url=data['forecasts'][0]['image']['url'])
-        await client.say(embed=embed)
+        await ctx.send(embed=embed)
     except:
-        await client.say(embed=error)
+        await ctx.send(embed=error)
 
 @client.command()
-async def status(ip = "vanilla-tairiku.com"):
+async def status(ctx, ip = "vanilla-tairiku.com"):
     try:
         server = MinecraftServer.lookup(ip)
         status = server.status()
@@ -196,24 +197,24 @@ async def status(ip = "vanilla-tairiku.com"):
 
         else:
             embed.add_field(name=":grimacing: オンラインプレイヤー", value="現在プレイしている人はいません", inline=True)
-        await client.say(embed=embed)
+        await ctx.send(embed=embed)
     except:
-        await client.say(embed=error)
+        await ctx.send(embed=error)
 
 @client.command()
-async def ping(ip = "vanilla-tairiku.com"):
+async def ping(ctx, ip = "vanilla-tairiku.com"):
     try:
         server = MinecraftServer.lookup(ip)
         status = server.status()
         msg = "応答時間は {0} msです".format(status.latency)
         embed=discord.Embed(title=ip, description=msg, color=0x0fa800)
         embed.set_author(name="ping",icon_url="https://t1.rbxcdn.com/a8f882d102d3a03b4e88d6da5e696095")
-        await client.say(embed=embed)
+        await ctx.send(embed=embed)
     except:
-        await client.say(embed=error)
+        await ctx.send(embed=error)
 
 @client.command()
-async def sunmoon(zipcode = '6308213'):
+async def sunmoon(ctx, zipcode = '6308213'):
     try:
         zip_pattern = re.compile('^[0-9]{7}$')
         if re.match(zip_pattern, zipcode):
@@ -240,12 +241,12 @@ async def sunmoon(zipcode = '6308213'):
             embed.add_field(name="月の出", value=mr, inline=True)
             embed.add_field(name="月の入り", value=ms, inline=True)
             embed.add_field(name="正午月齢", value=ma, inline=True)
-            await client.say(embed=embed)
+            await ctx.send(embed=embed)
         else:
             print('郵便番号が正規表現にマッチしませんでした')
-            await client.say(embed=error)
+            await ctx.send(embed=error)
     except:
-        await client.say(embed=error)
+        await ctx.send(embed=error)
 
 
 #コマンド以外
@@ -257,7 +258,9 @@ async def on_message(message):
         return
 
     if message.content.startswith('ぬるぽ'):
-        await client.send_message(message.channel, message.author.mention + '\rヽ( ･∀･)ﾉ┌┛ｶﾞｯΣ(ﾉ`Д´)ﾉ')
+        #await client.send_message(message.channel, message.author.mention + '\rヽ( ･∀･)ﾉ┌┛ｶﾞｯΣ(ﾉ`Д´)ﾉ')
+        reply = f'{message.author.mention}\rヽ( ･∀･)ﾉ┌┛ｶﾞｯΣ(ﾉ`Д´)ﾉ'
+        await message.channel.send(reply)
     elif message.content.startswith('ca!clean'):
         clean_flag = True
         while (clean_flag):
